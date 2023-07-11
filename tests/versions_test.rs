@@ -1,11 +1,17 @@
 use proto_pdk::*;
-use proto_pdk_test_utils::create_plugin;
+use proto_pdk_test_utils::{create_plugin, generate_resolve_versions_tests};
 use starbase_sandbox::create_empty_sandbox;
+
+generate_resolve_versions_tests!("go_plugin", "go-test", {
+    "1.19" => "1.19.11",
+    "1.11" => "1.11.13",
+    "1.9.0-rc2" => "1.9.0-rc2",
+});
 
 #[test]
 fn loads_versions_from_git() {
     let sandbox = create_empty_sandbox();
-    let plugin = create_plugin("go_plugin", sandbox.path());
+    let plugin = create_plugin("go_plugin", "go-test", sandbox.path());
 
     let output = plugin.load_versions(LoadVersionsInput::default());
 
@@ -15,7 +21,7 @@ fn loads_versions_from_git() {
 #[test]
 fn sets_latest_alias() {
     let sandbox = create_empty_sandbox();
-    let plugin = create_plugin("go_plugin", sandbox.path());
+    let plugin = create_plugin("go_plugin", "go-test", sandbox.path());
 
     let output = plugin.load_versions(LoadVersionsInput::default());
 
@@ -27,7 +33,7 @@ fn sets_latest_alias() {
 #[test]
 fn parse_gomod_file() {
     let sandbox = create_empty_sandbox();
-    let plugin = create_plugin("go_plugin", sandbox.path());
+    let plugin = create_plugin("go_plugin", "go-test", sandbox.path());
 
     let output = plugin.parse_version_file(ParseVersionFileInput {
         content: r#"
@@ -49,7 +55,7 @@ require (
 #[test]
 fn returns_no_version_from_gomod() {
     let sandbox = create_empty_sandbox();
-    let plugin = create_plugin("go_plugin", sandbox.path());
+    let plugin = create_plugin("go_plugin", "go-test", sandbox.path());
 
     let output = plugin.parse_version_file(ParseVersionFileInput {
         content: r#"
@@ -69,7 +75,7 @@ require (
 #[test]
 fn parse_gowork_file() {
     let sandbox = create_empty_sandbox();
-    let plugin = create_plugin("go_plugin", sandbox.path());
+    let plugin = create_plugin("go_plugin", "go-test", sandbox.path());
 
     let output = plugin.parse_version_file(ParseVersionFileInput {
         content: r#"
@@ -90,7 +96,7 @@ use (
 #[test]
 fn returns_no_version_from_gowork() {
     let sandbox = create_empty_sandbox();
-    let plugin = create_plugin("go_plugin", sandbox.path());
+    let plugin = create_plugin("go_plugin", "go-test", sandbox.path());
 
     let output = plugin.parse_version_file(ParseVersionFileInput {
         content: r#"

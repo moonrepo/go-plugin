@@ -3,10 +3,12 @@ use proto_pdk_test_utils::{create_plugin, generate_download_install_tests};
 use starbase_sandbox::create_empty_sandbox;
 use std::path::PathBuf;
 
+generate_download_install_tests!("go_plugin", "go-test", "1.20.0");
+
 #[test]
 fn supports_linux_arm64() {
     let sandbox = create_empty_sandbox();
-    let plugin = create_plugin("go_plugin", sandbox.path());
+    let plugin = create_plugin("go_plugin", "go-test", sandbox.path());
 
     assert_eq!(
         plugin.download_prebuilt(DownloadPrebuiltInput {
@@ -31,7 +33,7 @@ fn supports_linux_arm64() {
 #[test]
 fn supports_linux_x64() {
     let sandbox = create_empty_sandbox();
-    let plugin = create_plugin("go_plugin", sandbox.path());
+    let plugin = create_plugin("go_plugin", "go-test", sandbox.path());
 
     assert_eq!(
         plugin.download_prebuilt(DownloadPrebuiltInput {
@@ -56,7 +58,7 @@ fn supports_linux_x64() {
 #[test]
 fn supports_macos_arm64() {
     let sandbox = create_empty_sandbox();
-    let plugin = create_plugin("go_plugin", sandbox.path());
+    let plugin = create_plugin("go_plugin", "go-test", sandbox.path());
 
     assert_eq!(
         plugin.download_prebuilt(DownloadPrebuiltInput {
@@ -81,7 +83,7 @@ fn supports_macos_arm64() {
 #[test]
 fn supports_macos_x64() {
     let sandbox = create_empty_sandbox();
-    let plugin = create_plugin("go_plugin", sandbox.path());
+    let plugin = create_plugin("go_plugin", "go-test", sandbox.path());
 
     assert_eq!(
         plugin.download_prebuilt(DownloadPrebuiltInput {
@@ -106,7 +108,7 @@ fn supports_macos_x64() {
 #[test]
 fn supports_windows_x64() {
     let sandbox = create_empty_sandbox();
-    let plugin = create_plugin("go_plugin", sandbox.path());
+    let plugin = create_plugin("go_plugin", "go-test", sandbox.path());
 
     assert_eq!(
         plugin.download_prebuilt(DownloadPrebuiltInput {
@@ -131,7 +133,7 @@ fn supports_windows_x64() {
 #[test]
 fn supports_freebsd_x64() {
     let sandbox = create_empty_sandbox();
-    let plugin = create_plugin("go_plugin", sandbox.path());
+    let plugin = create_plugin("go_plugin", "go-test", sandbox.path());
 
     assert_eq!(
         plugin.download_prebuilt(DownloadPrebuiltInput {
@@ -156,7 +158,7 @@ fn supports_freebsd_x64() {
 #[test]
 fn locates_unix_bin() {
     let sandbox = create_empty_sandbox();
-    let plugin = create_plugin("go_plugin", sandbox.path());
+    let plugin = create_plugin("go_plugin", "go-test", sandbox.path());
 
     assert_eq!(
         plugin
@@ -177,7 +179,7 @@ fn locates_unix_bin() {
 #[test]
 fn locates_windows_bin() {
     let sandbox = create_empty_sandbox();
-    let plugin = create_plugin("go_plugin", sandbox.path());
+    let plugin = create_plugin("go_plugin", "go-test", sandbox.path());
 
     assert_eq!(
         plugin
@@ -193,10 +195,4 @@ fn locates_windows_bin() {
             .bin_path,
         Some("bin/go.exe".into())
     );
-}
-
-mod flows {
-    use super::*;
-
-    generate_download_install_tests!("go_plugin", "1.20.0");
 }
