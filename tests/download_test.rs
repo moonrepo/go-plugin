@@ -1,10 +1,7 @@
-use std::path::PathBuf;
-
-use proto_pdk::{
-    DownloadPrebuiltInput, DownloadPrebuiltOutput, Environment, HostArch, HostOS, LocateBinsInput,
-};
-use proto_pdk_test_utils::create_plugin;
+use proto_pdk::*;
+use proto_pdk_test_utils::{create_plugin, generate_download_install_tests};
 use starbase_sandbox::create_empty_sandbox;
+use std::path::PathBuf;
 
 #[test]
 fn supports_linux_arm64() {
@@ -196,4 +193,10 @@ fn locates_windows_bin() {
             .bin_path,
         Some("bin/go.exe".into())
     );
+}
+
+mod flows {
+    use super::*;
+
+    generate_download_install_tests!("go_plugin", "1.20.0");
 }
