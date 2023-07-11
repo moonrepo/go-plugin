@@ -1,0 +1,2 @@
+[plugins]
+go-test = "source:target/wasm32-wasi/debug/go_plugin.wasm"
