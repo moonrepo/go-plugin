@@ -34,3 +34,30 @@ pub fn to_go_version(version: &str) -> String {
 
     next.replace("-", "")
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parses_from() {
+        assert_eq!(from_go_version("1"), "1.0.0");
+        assert_eq!(from_go_version("1.2"), "1.2.0");
+        assert_eq!(from_go_version("1.2.3"), "1.2.3");
+
+        assert_eq!(from_go_version("1alpha1"), "1.0.0-alpha1");
+        assert_eq!(from_go_version("1.2beta2"), "1.2.0-beta2");
+        assert_eq!(from_go_version("1.2.3rc3"), "1.2.3-rc3");
+    }
+
+    #[test]
+    fn formats_to() {
+        assert_eq!(to_go_version("1.0.0"), "1");
+        assert_eq!(to_go_version("1.2.0"), "1.2");
+        assert_eq!(to_go_version("1.2.3"), "1.2.3");
+
+        assert_eq!(to_go_version("1.0.0-alpha1"), "1alpha1");
+        assert_eq!(to_go_version("1.2.0-beta2"), "1.2beta2");
+        assert_eq!(to_go_version("1.2.3-rc3"), "1.2.3rc3");
+    }
+}
