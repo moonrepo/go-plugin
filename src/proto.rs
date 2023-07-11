@@ -1,3 +1,4 @@
+use crate::version::{from_go_version, to_go_version};
 use extism_pdk::*;
 use proto_pdk::*;
 
@@ -17,11 +18,14 @@ pub fn register_tool(Json(_): Json<ToolMetadataInput>) -> FnResult<Json<ToolMeta
 pub fn download_prebuilt(
     Json(input): Json<DownloadPrebuiltInput>,
 ) -> FnResult<Json<DownloadPrebuiltOutput>> {
-    let version = input.env.version;
+    let version = to_go_version(&input.env.version);
 
     let arch = match input.env.arch {
-        HostArch::Arm64 => "aarch64",
-        HostArch::X64 => "x86_64",
+        HostArch::Arm => "armv6l",
+        HostArch::Arm64 => "arm64",
+        HostArch::X64 => "amd64",
+        HostArch::X86 => "386", // i386
+        HostArch::S390x => "s390x",
         other => {
             return Err(PluginError::UnsupportedArchitecture {
                 tool: NAME.into(),
@@ -31,9 +35,10 @@ pub fn download_prebuilt(
     };
 
     let prefix = match input.env.os {
-        HostOS::Linux => format!("deno-{arch}-unknown-linux-gnu"),
-        HostOS::MacOS => format!("deno-{arch}-apple-darwin"),
-        HostOS::Windows => format!("deno-{arch}-pc-windows-msvc"),
+        HostOS::Linux => format!("go{version}.linux-{arch}"),
+        HostOS::FreeBSD => format!("go{version}.freebsd-{arch}"),
+        HostOS::MacOS => format!("go{version}.darwin-{arch}"),
+        HostOS::Windows => format!("go{version}.windows-{arch}"),
         other => {
             return Err(PluginError::UnsupportedPlatform {
                 tool: NAME.into(),
@@ -42,12 +47,16 @@ pub fn download_prebuilt(
         }
     };
 
-    let filename = format!("{prefix}.zip");
+    let filename = if input.env.os == HostOS::Windows {
+        format!("{prefix}.zip")
+    } else {
+        format!("{prefix}.tar.gz")
+    };
 
     Ok(Json(DownloadPrebuiltOutput {
-        download_url: format!(
-            "https://github.com/denoland/deno/releases/download/v{version}/{filename}"
-        ),
+        archive_prefix: Some("go".into()),
+        checksum_url: Some(format!("https://dl.google.com/go/{filename}.sha256")),
+        download_url: format!("https://dl.google.com/go/{filename}"),
         download_name: Some(filename),
         ..DownloadPrebuiltOutput::default()
     }))
@@ -57,27 +66,27 @@ pub fn download_prebuilt(
 pub fn locate_bins(Json(input): Json<LocateBinsInput>) -> FnResult<Json<LocateBinsOutput>> {
     Ok(Json(LocateBinsOutput {
         bin_path: Some(if input.env.os == HostOS::Windows {
-            format!("{}.exe", BIN)
+            format!("bin/{}.exe", BIN)
         } else {
-            BIN.into()
+            format!("bin/{}", BIN)
         }),
         fallback_last_globals_dir: true,
         globals_lookup_dirs: vec![
-            "$DENO_INSTALL_ROOT".into(),
-            "$DENO_HOME/bin".into(),
-            "$HOME/.deno/bin".into(),
+            "$GOBIN".into(),
+            "$GOROOT/bin".into(),
+            "$GOPATH/bin".into(),
+            "$HOME/go/bin".into(),
         ],
     }))
 }
 
 #[plugin_fn]
 pub fn load_versions(Json(_): Json<LoadVersionsInput>) -> FnResult<Json<LoadVersionsOutput>> {
-    let tags = load_git_tags("https://github.com/denoland/deno")?;
-
+    let tags = load_git_tags("https://github.com/golang/go")?;
     let tags = tags
         .iter()
-        .filter(|t| !t.ends_with("^{}"))
-        .filter_map(|t| t.strip_prefix('v').map(|t| t.to_owned()))
+        .filter_map(|t| t.strip_prefix("go"))
+        .map(from_go_version)
         .collect::<Vec<_>>();
 
     Ok(Json(LoadVersionsOutput::from_tags(&tags)?))
@@ -86,6 +95,24 @@ pub fn load_versions(Json(_): Json<LoadVersionsInput>) -> FnResult<Json<LoadVers
 #[plugin_fn]
 pub fn detect_version_files(_: ()) -> FnResult<Json<DetectVersionOutput>> {
     Ok(Json(DetectVersionOutput {
-        files: vec![".dvmrc".into()],
+        files: vec!["go.mod".into(), "go.work".into()],
     }))
+}
+
+#[plugin_fn]
+pub fn parse_version_file(
+    Json(input): Json<ParseVersionInput>,
+) -> FnResult<Json<ParseVersionOutput>> {
+    let mut version = None;
+
+    if input.file == "go.mod" || input.file == "go.work" {
+        for line in input.content.split('\n') {
+            if let Some(v) = line.strip_prefix("go ") {
+                version = Some(from_go_version(v));
+                break;
+            }
+        }
+    }
+
+    Ok(Json(ParseVersionOutput { version }))
 }
