@@ -1,7 +1,7 @@
 pub fn from_go_version(version: &str) -> String {
     // Zero releases don't end in ".0",
     // so we must fix manually...
-    let suffix = match version.matches(".").count() {
+    let suffix = match version.matches('.').count() {
         1 => ".0",
         0 => ".0.0",
         _ => "",
@@ -34,7 +34,7 @@ pub fn to_go_version(version: &str) -> String {
         next = next.replace(".0-", "-");
     }
 
-    next.replace("-", "")
+    next.replace('-', "")
 }
 
 #[cfg(test)]
