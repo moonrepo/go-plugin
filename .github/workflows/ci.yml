@@ -46,3 +46,4 @@ jobs:
         with:
           bins: cargo-wasi, cargo-nextest
       - run: cargo wasi build
+      - run: cargo nextest run

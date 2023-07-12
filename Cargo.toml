@@ -12,3 +12,9 @@ crate-type = ['cdylib']
 extism-pdk = "0.3.3"
 proto_pdk = "0.2.1"
 serde = "1.0.167"
+
+[dev-dependencies]
+proto_core = "0.12.1"
+proto_pdk_test_utils = "0.1.0"
+starbase_sandbox = "0.1.5"
+tokio = "1.29.1"

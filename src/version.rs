@@ -1,7 +1,7 @@
 pub fn from_go_version(version: &str) -> String {
     // Zero releases don't end in ".0",
     // so we must fix manually...
-    let suffix = match version.matches(".").count() {
+    let suffix = match version.matches('.').count() {
         1 => ".0",
         0 => ".0.0",
         _ => "",
@@ -9,8 +9,10 @@ pub fn from_go_version(version: &str) -> String {
 
     // go1.4rc1, go1.19.1beta, etc
     for id in ["alpha", "beta", "rc"] {
-        if version.contains(id) {
-            return version.replace(id, format!("{suffix}-{id}").as_str());
+        let id_prefix = format!("{suffix}-{id}");
+
+        if version.contains(id) && !version.contains(&id_prefix) {
+            return version.replace(id, &id_prefix);
         }
     }
 
@@ -32,5 +34,36 @@ pub fn to_go_version(version: &str) -> String {
         next = next.replace(".0-", "-");
     }
 
-    next.replace("-", "")
+    next.replace('-', "")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parses_from() {
+        assert_eq!(from_go_version("1"), "1.0.0");
+        assert_eq!(from_go_version("1.2"), "1.2.0");
+        assert_eq!(from_go_version("1.2.3"), "1.2.3");
+
+        assert_eq!(from_go_version("1alpha1"), "1.0.0-alpha1");
+        assert_eq!(from_go_version("1.2beta2"), "1.2.0-beta2");
+        assert_eq!(from_go_version("1.2.3rc3"), "1.2.3-rc3");
+
+        // Shouldn't change
+        assert_eq!(from_go_version("1.0.0"), "1.0.0");
+        assert_eq!(from_go_version("1.0.0-alpha1"), "1.0.0-alpha1");
+    }
+
+    #[test]
+    fn formats_to() {
+        assert_eq!(to_go_version("1.0.0"), "1");
+        assert_eq!(to_go_version("1.2.0"), "1.2");
+        assert_eq!(to_go_version("1.2.3"), "1.2.3");
+
+        assert_eq!(to_go_version("1.0.0-alpha1"), "1alpha1");
+        assert_eq!(to_go_version("1.2.0-beta2"), "1.2beta2");
+        assert_eq!(to_go_version("1.2.3-rc3"), "1.2.3rc3");
+    }
 }
