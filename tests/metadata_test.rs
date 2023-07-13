@@ -5,7 +5,7 @@ use starbase_sandbox::create_empty_sandbox;
 #[test]
 fn registers_metadata() {
     let sandbox = create_empty_sandbox();
-    let plugin = create_plugin("go_plugin", "go-test", sandbox.path());
+    let plugin = create_plugin("go-test", sandbox.path());
 
     assert_eq!(
         plugin.register_tool(ToolMetadataInput::default()),

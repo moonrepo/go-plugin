@@ -18,6 +18,19 @@ pub fn register_tool(Json(_): Json<ToolMetadataInput>) -> FnResult<Json<ToolMeta
 pub fn download_prebuilt(
     Json(input): Json<DownloadPrebuiltInput>,
 ) -> FnResult<Json<DownloadPrebuiltOutput>> {
+    check_supported_os_and_arch(
+        NAME,
+        &input.env,
+        permutations! [
+            HostOS::Linux => [
+                HostArch::X64, HostArch::Arm64, HostArch::X86, HostArch::Arm, HostArch::S390x
+            ],
+            HostOS::MacOS => [HostArch::X64, HostArch::Arm64],
+            HostOS::Windows => [HostArch::X64, HostArch::Arm64, HostArch::X86],
+            HostOS::FreeBSD => [HostArch::X64, HostArch::X86],
+        ],
+    )?;
+
     let version = to_go_version(&input.env.version);
 
     let arch = match input.env.arch {
@@ -26,12 +39,7 @@ pub fn download_prebuilt(
         HostArch::X64 => "amd64",
         HostArch::X86 => "386", // i386
         HostArch::S390x => "s390x",
-        other => {
-            return Err(PluginError::UnsupportedArchitecture {
-                tool: NAME.into(),
-                arch: other.to_string(),
-            })?;
-        }
+        _ => unreachable!(),
     };
 
     let prefix = match input.env.os {
@@ -39,12 +47,7 @@ pub fn download_prebuilt(
         HostOS::FreeBSD => format!("go{version}.freebsd-{arch}"),
         HostOS::MacOS => format!("go{version}.darwin-{arch}"),
         HostOS::Windows => format!("go{version}.windows-{arch}"),
-        other => {
-            return Err(PluginError::UnsupportedPlatform {
-                tool: NAME.into(),
-                platform: other.to_string(),
-            })?;
-        }
+        _ => unreachable!(),
     };
 
     let filename = if input.env.os == HostOS::Windows {
