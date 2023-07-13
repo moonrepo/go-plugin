@@ -27,7 +27,7 @@ pub fn download_prebuilt(
         HostArch::X86 => "386", // i386
         HostArch::S390x => "s390x",
         other => {
-            return Err(PluginError::UnsupportedArchitecture {
+            return Err(PluginError::UnsupportedArch {
                 tool: NAME.into(),
                 arch: other.to_string(),
             })?;
@@ -40,9 +40,9 @@ pub fn download_prebuilt(
         HostOS::MacOS => format!("go{version}.darwin-{arch}"),
         HostOS::Windows => format!("go{version}.windows-{arch}"),
         other => {
-            return Err(PluginError::UnsupportedPlatform {
+            return Err(PluginError::UnsupportedOS {
                 tool: NAME.into(),
-                platform: other.to_string(),
+                os: other.to_string(),
             })?;
         }
     };
