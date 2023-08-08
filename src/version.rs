@@ -1,3 +1,5 @@
+use proto_pdk::{Version, VersionReq};
+
 pub fn from_go_version(version: &str) -> String {
     // Zero releases don't end in ".0",
     // so we must fix manually...
@@ -20,6 +22,14 @@ pub fn from_go_version(version: &str) -> String {
 }
 
 pub fn to_go_version(version: &str) -> String {
+    // Versioning changed in >= 1.21.0
+    // https://go.dev/doc/go1.21#introduction
+    if let Ok(ver) = Version::parse(version) {
+        if VersionReq::parse(">=1.21.0").unwrap().matches(&ver) {
+            return version.to_owned();
+        }
+    }
+
     let mut next = version;
 
     // Remove all trailing ".0"
@@ -65,5 +75,10 @@ mod tests {
         assert_eq!(to_go_version("1.0.0-alpha1"), "1alpha1");
         assert_eq!(to_go_version("1.2.0-beta2"), "1.2beta2");
         assert_eq!(to_go_version("1.2.3-rc3"), "1.2.3rc3");
+
+        // New versioning
+        assert_eq!(to_go_version("1.21.0"), "1.21.0");
+        assert_eq!(to_go_version("1.22.1"), "1.22.1");
+        // assert_eq!(to_go_version("1.23.0-beta2"), "1.23.0beta2");
     }
 }

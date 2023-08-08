@@ -69,9 +69,9 @@ pub fn download_prebuilt(
 pub fn locate_bins(Json(input): Json<LocateBinsInput>) -> FnResult<Json<LocateBinsOutput>> {
     Ok(Json(LocateBinsOutput {
         bin_path: Some(if input.env.os == HostOS::Windows {
-            format!("bin/{}.exe", BIN)
+            format!("bin/{}.exe", BIN).into()
         } else {
-            format!("bin/{}", BIN)
+            format!("bin/{}", BIN).into()
         }),
         fallback_last_globals_dir: true,
         globals_lookup_dirs: vec![
@@ -80,6 +80,7 @@ pub fn locate_bins(Json(input): Json<LocateBinsInput>) -> FnResult<Json<LocateBi
             "$GOPATH/bin".into(),
             "$HOME/go/bin".into(),
         ],
+        ..LocateBinsOutput::default()
     }))
 }
 

@@ -1,11 +1,12 @@
-use proto_pdk::*;
-use proto_pdk_test_utils::{create_plugin, generate_resolve_versions_tests};
+use proto_pdk_test_utils::*;
 use starbase_sandbox::create_empty_sandbox;
 
 generate_resolve_versions_tests!("go-test", {
-    "1.19" => "1.19.11",
+    "1.19" => "1.19.12",
     "1.11" => "1.11.13",
     "1.9.0-rc2" => "1.9.0-rc2",
+    "1.21" => "1.21.0",
+    "1.21.0" => "1.21.0",
 });
 
 #[test]
