@@ -5,7 +5,7 @@
 #### 🚀 Updates
 
 - Updated to support proto v0.14 release.
-- Updated to support go's new versioning scheme starting with v1.21.0.
+- Updated to support Go's new versioning scheme starting with v1.21.0.
 
 ## 0.0.3
 

@@ -2,7 +2,7 @@ use proto_pdk_test_utils::*;
 use starbase_sandbox::create_empty_sandbox;
 use std::path::PathBuf;
 
-generate_download_install_tests!("go-test", "1.20.0");
+generate_download_install_tests!("go-test", "1.21.0");
 
 #[test]
 fn supports_linux_arm64() {
