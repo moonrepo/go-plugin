@@ -1,6 +1,7 @@
 use crate::version::{from_go_version, to_go_version};
 use extism_pdk::*;
 use proto_pdk::*;
+use std::collections::HashMap;
 use std::fs;
 
 #[host_fn]
@@ -150,4 +151,19 @@ pub fn uninstall_global(
     }
 
     Ok(Json(output))
+}
+
+#[plugin_fn]
+pub fn sync_shell_profile(
+    Json(input): Json<SyncShellProfileInput>,
+) -> FnResult<Json<SyncShellProfileOutput>> {
+    Ok(Json(SyncShellProfileOutput {
+        check_var: "GOBIN".into(),
+        export_vars: Some(HashMap::from_iter([(
+            "GOBIN".into(),
+            "$HOME/go/bin".into(),
+        )])),
+        extend_path: Some(vec!["$GOBIN".into()]),
+        skip_sync: input.passthrough_args.contains(&"--no-gobin".to_string()),
+    }))
 }
