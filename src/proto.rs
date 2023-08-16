@@ -142,12 +142,17 @@ pub fn install_global(
 pub fn uninstall_global(
     Json(input): Json<UninstallGlobalInput>,
 ) -> FnResult<Json<UninstallGlobalOutput>> {
-    let mut output = UninstallGlobalOutput::default();
+    let mut output = UninstallGlobalOutput {
+        uninstalled: true,
+        ..UninstallGlobalOutput::default()
+    };
     let global_path = input.globals_dir.join(input.dependency);
 
     if global_path.exists() {
-        fs::remove_file(global_path)?;
-        output.uninstalled = true;
+        if let Err(error) = fs::remove_file(global_path) {
+            output.uninstalled = false;
+            output.error = Some(error.to_string());
+        }
     }
 
     Ok(Json(output))
