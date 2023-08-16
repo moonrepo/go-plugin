@@ -1,6 +1,13 @@
 use crate::version::{from_go_version, to_go_version};
 use extism_pdk::*;
 use proto_pdk::*;
+use std::collections::HashMap;
+use std::fs;
+
+#[host_fn]
+extern "ExtismHost" {
+    fn exec_command(input: Json<ExecCommandInput>) -> Json<ExecCommandOutput>;
+}
 
 static NAME: &str = "Go";
 static BIN: &str = "go";
@@ -10,6 +17,7 @@ pub fn register_tool(Json(_): Json<ToolMetadataInput>) -> FnResult<Json<ToolMeta
     Ok(Json(ToolMetadataOutput {
         name: NAME.into(),
         type_of: PluginType::Language,
+        plugin_version: Some(env!("CARGO_PKG_VERSION").into()),
         ..ToolMetadataOutput::default()
     }))
 }
@@ -93,7 +101,7 @@ pub fn load_versions(Json(_): Json<LoadVersionsInput>) -> FnResult<Json<LoadVers
         .map(from_go_version)
         .collect::<Vec<_>>();
 
-    Ok(Json(LoadVersionsOutput::from_tags(&tags)?))
+    Ok(Json(LoadVersionsOutput::from(tags)?))
 }
 
 #[plugin_fn]
@@ -119,4 +127,48 @@ pub fn parse_version_file(
     }
 
     Ok(Json(ParseVersionFileOutput { version }))
+}
+
+#[plugin_fn]
+pub fn install_global(
+    Json(input): Json<InstallGlobalInput>,
+) -> FnResult<Json<InstallGlobalOutput>> {
+    let result = exec_command!(BIN, ["install", &input.dependency]);
+
+    Ok(Json(InstallGlobalOutput::from_exec_command(result)))
+}
+
+#[plugin_fn]
+pub fn uninstall_global(
+    Json(input): Json<UninstallGlobalInput>,
+) -> FnResult<Json<UninstallGlobalOutput>> {
+    let mut output = UninstallGlobalOutput {
+        uninstalled: true,
+        ..UninstallGlobalOutput::default()
+    };
+    let global_path = input.globals_dir.join(input.dependency);
+
+    if global_path.exists() {
+        if let Err(error) = fs::remove_file(global_path) {
+            output.uninstalled = false;
+            output.error = Some(error.to_string());
+        }
+    }
+
+    Ok(Json(output))
+}
+
+#[plugin_fn]
+pub fn sync_shell_profile(
+    Json(input): Json<SyncShellProfileInput>,
+) -> FnResult<Json<SyncShellProfileOutput>> {
+    Ok(Json(SyncShellProfileOutput {
+        check_var: "GOBIN".into(),
+        export_vars: Some(HashMap::from_iter([(
+            "GOBIN".into(),
+            "$HOME/go/bin".into(),
+        )])),
+        extend_path: Some(vec!["$GOBIN".into()]),
+        skip_sync: input.passthrough_args.contains(&"--no-gobin".to_string()),
+    }))
 }
