@@ -41,7 +41,7 @@ pub fn download_prebuilt(
         ],
     )?;
 
-    let version = to_go_version(&input.state.version);
+    let version = to_go_version(&input.context.version);
 
     let arch = match env.arch {
         HostArch::Arm => "armv6l",
