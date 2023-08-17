@@ -26,9 +26,11 @@ pub fn register_tool(Json(_): Json<ToolMetadataInput>) -> FnResult<Json<ToolMeta
 pub fn download_prebuilt(
     Json(input): Json<DownloadPrebuiltInput>,
 ) -> FnResult<Json<DownloadPrebuiltOutput>> {
+    let env = get_proto_environment()?;
+
     check_supported_os_and_arch(
         NAME,
-        &input.env,
+        &env,
         permutations! [
             HostOS::Linux => [
                 HostArch::X64, HostArch::Arm64, HostArch::X86, HostArch::Arm, HostArch::S390x
@@ -39,9 +41,9 @@ pub fn download_prebuilt(
         ],
     )?;
 
-    let version = to_go_version(&input.env.version);
+    let version = to_go_version(&input.state.version);
 
-    let arch = match input.env.arch {
+    let arch = match env.arch {
         HostArch::Arm => "armv6l",
         HostArch::Arm64 => "arm64",
         HostArch::X64 => "amd64",
@@ -50,7 +52,7 @@ pub fn download_prebuilt(
         _ => unreachable!(),
     };
 
-    let prefix = match input.env.os {
+    let prefix = match env.os {
         HostOS::Linux => format!("go{version}.linux-{arch}"),
         HostOS::FreeBSD => format!("go{version}.freebsd-{arch}"),
         HostOS::MacOS => format!("go{version}.darwin-{arch}"),
@@ -58,7 +60,7 @@ pub fn download_prebuilt(
         _ => unreachable!(),
     };
 
-    let filename = if input.env.os == HostOS::Windows {
+    let filename = if env.os == HostOS::Windows {
         format!("{prefix}.zip")
     } else {
         format!("{prefix}.tar.gz")
@@ -74,13 +76,11 @@ pub fn download_prebuilt(
 }
 
 #[plugin_fn]
-pub fn locate_bins(Json(input): Json<LocateBinsInput>) -> FnResult<Json<LocateBinsOutput>> {
+pub fn locate_bins(Json(_): Json<LocateBinsInput>) -> FnResult<Json<LocateBinsOutput>> {
+    let env = get_proto_environment()?;
+
     Ok(Json(LocateBinsOutput {
-        bin_path: Some(if input.env.os == HostOS::Windows {
-            format!("bin/{}.exe", BIN).into()
-        } else {
-            format!("bin/{}", BIN).into()
-        }),
+        bin_path: Some(format_bin_name(&format!("bin/{}", BIN), env.os).into()),
         fallback_last_globals_dir: true,
         globals_lookup_dirs: vec![
             "$GOBIN".into(),
