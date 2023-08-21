@@ -47,7 +47,6 @@ require (
 )"#
         .into(),
         file: "go.mod".into(),
-        ..Default::default()
     });
 
     assert_eq!(output.version.unwrap(), "1.20.0");
@@ -67,7 +66,6 @@ require (
 )"#
         .into(),
         file: "go.mod".into(),
-        ..Default::default()
     });
 
     assert_eq!(output.version, None);
@@ -88,7 +86,6 @@ use (
 )"#
         .into(),
         file: "go.work".into(),
-        ..Default::default()
     });
 
     assert_eq!(output.version.unwrap(), "1.18.0");
@@ -107,7 +104,6 @@ use (
 )"#
         .into(),
         file: "go.work".into(),
-        ..Default::default()
     });
 
     assert_eq!(output.version, None);
