@@ -133,7 +133,7 @@ pub fn parse_version_file(
 pub fn install_global(
     Json(input): Json<InstallGlobalInput>,
 ) -> FnResult<Json<InstallGlobalOutput>> {
-    let result = exec_command!(BIN, ["install", &input.dependency]);
+    let result = exec_command!(inherit, BIN, ["install", &input.dependency]);
 
     Ok(Json(InstallGlobalOutput::from_exec_command(result)))
 }
