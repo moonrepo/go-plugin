@@ -43,6 +43,10 @@ pub fn download_prebuilt(
 
     let version = to_go_version(&input.context.version);
 
+    if version == "canary" {
+        return err!(PluginError::UnsupportedCanary { tool: NAME.into() }.into());
+    }
+
     let arch = match env.arch {
         HostArch::Arm => "armv6l",
         HostArch::Arm64 => "arm64",
