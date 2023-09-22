@@ -49,7 +49,7 @@ require (
         file: "go.mod".into(),
     });
 
-    assert_eq!(output.version.unwrap(), "1.20.0");
+    assert_eq!(output.version.unwrap(), "1.20");
 }
 
 #[test]
@@ -88,7 +88,7 @@ use (
         file: "go.work".into(),
     });
 
-    assert_eq!(output.version.unwrap(), "1.18.0");
+    assert_eq!(output.version.unwrap(), "1.18");
 }
 
 #[test]
