@@ -6,6 +6,10 @@
 
 - Updated dependencies.
 
+#### 🐞 Fixes
+
+- Fixed an issue where parsing `go.mod` or `go.work` would fully expand a partial version. For example, `1.19` would be fixed to `1.19.0` instead of `1.19.*`.
+
 ## 0.3.0
 
 #### 🚀 Updates
