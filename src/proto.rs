@@ -84,7 +84,7 @@ pub fn locate_bins(Json(_): Json<LocateBinsInput>) -> FnResult<Json<LocateBinsOu
     let env = get_proto_environment()?;
 
     Ok(Json(LocateBinsOutput {
-        bin_path: Some(format_bin_name(&format!("bin/{}", BIN), env.os).into()),
+        bin_path: Some(format_bin_name(format!("bin/{}", BIN), env.os).into()),
         fallback_last_globals_dir: true,
         globals_lookup_dirs: vec![
             "$GOBIN".into(),

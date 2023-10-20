@@ -19,14 +19,15 @@ fn supports_linux_arm64() {
             context: ToolContext {
                 version: "1.2.0".into(),
                 ..Default::default()
-            }
+            },
+            ..Default::default()
         }),
         DownloadPrebuiltOutput {
             archive_prefix: Some("go".into()),
-            checksum_name: None,
             checksum_url: Some("https://dl.google.com/go/go1.2.linux-arm64.tar.gz.sha256".into()),
             download_name: Some("go1.2.linux-arm64.tar.gz".into()),
-            download_url: "https://dl.google.com/go/go1.2.linux-arm64.tar.gz".into()
+            download_url: "https://dl.google.com/go/go1.2.linux-arm64.tar.gz".into(),
+            ..Default::default()
         }
     );
 }
@@ -47,14 +48,15 @@ fn supports_linux_x64() {
             context: ToolContext {
                 version: "1.2.0".into(),
                 ..Default::default()
-            }
+            },
+            ..Default::default()
         }),
         DownloadPrebuiltOutput {
             archive_prefix: Some("go".into()),
-            checksum_name: None,
             checksum_url: Some("https://dl.google.com/go/go1.2.linux-amd64.tar.gz.sha256".into()),
             download_name: Some("go1.2.linux-amd64.tar.gz".into()),
-            download_url: "https://dl.google.com/go/go1.2.linux-amd64.tar.gz".into()
+            download_url: "https://dl.google.com/go/go1.2.linux-amd64.tar.gz".into(),
+            ..Default::default()
         }
     );
 }
@@ -75,14 +77,15 @@ fn supports_macos_arm64() {
             context: ToolContext {
                 version: "1.2.0".into(),
                 ..Default::default()
-            }
+            },
+            ..Default::default()
         }),
         DownloadPrebuiltOutput {
             archive_prefix: Some("go".into()),
-            checksum_name: None,
             checksum_url: Some("https://dl.google.com/go/go1.2.darwin-arm64.tar.gz.sha256".into()),
             download_name: Some("go1.2.darwin-arm64.tar.gz".into()),
-            download_url: "https://dl.google.com/go/go1.2.darwin-arm64.tar.gz".into()
+            download_url: "https://dl.google.com/go/go1.2.darwin-arm64.tar.gz".into(),
+            ..Default::default()
         }
     );
 }
@@ -103,14 +106,15 @@ fn supports_macos_x64() {
             context: ToolContext {
                 version: "1.2.0".into(),
                 ..Default::default()
-            }
+            },
+            ..Default::default()
         }),
         DownloadPrebuiltOutput {
             archive_prefix: Some("go".into()),
-            checksum_name: None,
             checksum_url: Some("https://dl.google.com/go/go1.2.darwin-amd64.tar.gz.sha256".into()),
             download_name: Some("go1.2.darwin-amd64.tar.gz".into()),
-            download_url: "https://dl.google.com/go/go1.2.darwin-amd64.tar.gz".into()
+            download_url: "https://dl.google.com/go/go1.2.darwin-amd64.tar.gz".into(),
+            ..Default::default()
         }
     );
 }
@@ -131,14 +135,15 @@ fn supports_windows_x64() {
             context: ToolContext {
                 version: "1.2.0".into(),
                 ..Default::default()
-            }
+            },
+            ..Default::default()
         }),
         DownloadPrebuiltOutput {
             archive_prefix: Some("go".into()),
-            checksum_name: None,
             checksum_url: Some("https://dl.google.com/go/go1.2.windows-amd64.zip.sha256".into()),
             download_name: Some("go1.2.windows-amd64.zip".into()),
-            download_url: "https://dl.google.com/go/go1.2.windows-amd64.zip".into()
+            download_url: "https://dl.google.com/go/go1.2.windows-amd64.zip".into(),
+            ..Default::default()
         }
     );
 }
@@ -159,14 +164,15 @@ fn supports_freebsd_x64() {
             context: ToolContext {
                 version: "1.2.0".into(),
                 ..Default::default()
-            }
+            },
+            ..Default::default()
         }),
         DownloadPrebuiltOutput {
             archive_prefix: Some("go".into()),
-            checksum_name: None,
             checksum_url: Some("https://dl.google.com/go/go1.2.freebsd-amd64.tar.gz.sha256".into()),
             download_name: Some("go1.2.freebsd-amd64.tar.gz".into()),
-            download_url: "https://dl.google.com/go/go1.2.freebsd-amd64.tar.gz".into()
+            download_url: "https://dl.google.com/go/go1.2.freebsd-amd64.tar.gz".into(),
+            ..Default::default()
         }
     );
 }
