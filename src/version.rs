@@ -44,36 +44,10 @@ pub fn to_go_version(spec: &VersionSpec) -> String {
                 next = next.replace(".0-", "-");
             }
 
-            next
+            next.replace('-', "")
         }
     }
 }
-
-// pub fn to_go_version(version: &str) -> String {
-//     // Versioning changed in >= 1.21.0
-//     // https://go.dev/doc/go1.21#introduction
-//     if let Ok(ver) = Version::parse(version) {
-//         if VersionReq::parse(">=1.21.0").unwrap().matches(&ver) {
-//             return version.to_owned();
-//         }
-//     }
-
-//     let mut next = version;
-
-//     // Remove all trailing ".0"
-//     while let Some(prefix) = next.strip_suffix(".0") {
-//         next = prefix;
-//     }
-
-//     // Remove leading ".0" from prereleases
-//     let mut next = next.to_owned();
-
-//     while next.contains(".0-") {
-//         next = next.replace(".0-", "-");
-//     }
-
-//     next.replace('-', "")
-// }
 
 #[cfg(test)]
 mod tests {
