@@ -41,9 +41,9 @@ pub fn download_prebuilt(
         ],
     )?;
 
-    let version = to_go_version(&input.context.version);
+    let version = &input.context.version;
 
-    if version == "canary" {
+    if version.is_canary() {
         return err!(PluginError::UnsupportedCanary { tool: NAME.into() }.into());
     }
 
@@ -56,6 +56,7 @@ pub fn download_prebuilt(
         _ => unreachable!(),
     };
 
+    let version = to_go_version(version);
     let prefix = match env.os {
         HostOS::Linux => format!("go{version}.linux-{arch}"),
         HostOS::FreeBSD => format!("go{version}.freebsd-{arch}"),
@@ -99,6 +100,7 @@ pub fn locate_bins(Json(_): Json<LocateBinsInput>) -> FnResult<Json<LocateBinsOu
 #[plugin_fn]
 pub fn load_versions(Json(_): Json<LoadVersionsInput>) -> FnResult<Json<LoadVersionsOutput>> {
     let tags = load_git_tags("https://github.com/golang/go")?;
+
     let tags = tags
         .iter()
         .filter_map(|t| t.strip_prefix("go"))
@@ -124,7 +126,7 @@ pub fn parse_version_file(
     if input.file == "go.mod" || input.file == "go.work" {
         for line in input.content.split('\n') {
             if let Some(v) = line.strip_prefix("go ") {
-                version = Some(v.to_owned());
+                version = Some(UnresolvedVersionSpec::parse(v)?);
                 break;
             }
         }

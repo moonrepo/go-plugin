@@ -17,7 +17,7 @@ fn supports_linux_arm64() {
     assert_eq!(
         plugin.download_prebuilt(DownloadPrebuiltInput {
             context: ToolContext {
-                version: "1.2.0".into(),
+                version: VersionSpec::parse("1.2.0").unwrap(),
                 ..Default::default()
             },
             ..Default::default()
@@ -46,7 +46,7 @@ fn supports_linux_x64() {
     assert_eq!(
         plugin.download_prebuilt(DownloadPrebuiltInput {
             context: ToolContext {
-                version: "1.2.0".into(),
+                version: VersionSpec::parse("1.2.0").unwrap(),
                 ..Default::default()
             },
             ..Default::default()
@@ -75,7 +75,7 @@ fn supports_macos_arm64() {
     assert_eq!(
         plugin.download_prebuilt(DownloadPrebuiltInput {
             context: ToolContext {
-                version: "1.2.0".into(),
+                version: VersionSpec::parse("1.2.0").unwrap(),
                 ..Default::default()
             },
             ..Default::default()
@@ -104,7 +104,7 @@ fn supports_macos_x64() {
     assert_eq!(
         plugin.download_prebuilt(DownloadPrebuiltInput {
             context: ToolContext {
-                version: "1.2.0".into(),
+                version: VersionSpec::parse("1.2.0").unwrap(),
                 ..Default::default()
             },
             ..Default::default()
@@ -133,7 +133,7 @@ fn supports_windows_x64() {
     assert_eq!(
         plugin.download_prebuilt(DownloadPrebuiltInput {
             context: ToolContext {
-                version: "1.2.0".into(),
+                version: VersionSpec::parse("1.2.0").unwrap(),
                 ..Default::default()
             },
             ..Default::default()
@@ -162,7 +162,7 @@ fn supports_freebsd_x64() {
     assert_eq!(
         plugin.download_prebuilt(DownloadPrebuiltInput {
             context: ToolContext {
-                version: "1.2.0".into(),
+                version: VersionSpec::parse("1.2.0").unwrap(),
                 ..Default::default()
             },
             ..Default::default()
@@ -192,7 +192,7 @@ fn locates_unix_bin() {
         plugin
             .locate_bins(LocateBinsInput {
                 context: ToolContext {
-                    version: "1.2.0".into(),
+                    version: VersionSpec::parse("1.2.0").unwrap(),
                     ..Default::default()
                 },
             })
@@ -216,7 +216,7 @@ fn locates_windows_bin() {
         plugin
             .locate_bins(LocateBinsInput {
                 context: ToolContext {
-                    version: "1.2.0".into(),
+                    version: VersionSpec::parse("1.2.0").unwrap(),
                     ..Default::default()
                 },
             })
