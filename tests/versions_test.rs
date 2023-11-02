@@ -49,7 +49,10 @@ require (
         file: "go.mod".into(),
     });
 
-    assert_eq!(output.version.unwrap(), "1.20");
+    assert_eq!(
+        output.version.unwrap(),
+        UnresolvedVersionSpec::parse("1.20").unwrap()
+    );
 }
 
 #[test]
@@ -88,7 +91,10 @@ use (
         file: "go.work".into(),
     });
 
-    assert_eq!(output.version.unwrap(), "1.18");
+    assert_eq!(
+        output.version.unwrap(),
+        UnresolvedVersionSpec::parse("1.18").unwrap()
+    );
 }
 
 #[test]

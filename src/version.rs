@@ -1,4 +1,4 @@
-use proto_pdk::{Version, VersionReq};
+use proto_pdk::VersionSpec;
 
 pub fn from_go_version(version: &str) -> String {
     // Zero releases don't end in ".0",
@@ -21,31 +21,59 @@ pub fn from_go_version(version: &str) -> String {
     format!("{version}{suffix}")
 }
 
-pub fn to_go_version(version: &str) -> String {
-    // Versioning changed in >= 1.21.0
-    // https://go.dev/doc/go1.21#introduction
-    if let Ok(ver) = Version::parse(version) {
-        if VersionReq::parse(">=1.21.0").unwrap().matches(&ver) {
-            return version.to_owned();
+pub fn to_go_version(spec: &VersionSpec) -> String {
+    match spec {
+        VersionSpec::Canary => "canary".into(),
+        VersionSpec::Alias(alias) => alias.into(),
+        VersionSpec::Version(version) => {
+            // Versioning changed in >= 1.21.0
+            // https://go.dev/doc/go1.21#introduction
+            if version.major >= 1 && version.minor >= 21 {
+                return version.to_string();
+            }
+
+            let mut next = version.to_string();
+
+            // Remove all trailing ".0"
+            while let Some(prefix) = next.strip_suffix(".0") {
+                next = prefix.to_owned();
+            }
+
+            // Remove leading ".0" from prereleases
+            while next.contains(".0-") {
+                next = next.replace(".0-", "-");
+            }
+
+            next
         }
     }
-
-    let mut next = version;
-
-    // Remove all trailing ".0"
-    while let Some(prefix) = next.strip_suffix(".0") {
-        next = prefix;
-    }
-
-    // Remove leading ".0" from prereleases
-    let mut next = next.to_owned();
-
-    while next.contains(".0-") {
-        next = next.replace(".0-", "-");
-    }
-
-    next.replace('-', "")
 }
+
+// pub fn to_go_version(version: &str) -> String {
+//     // Versioning changed in >= 1.21.0
+//     // https://go.dev/doc/go1.21#introduction
+//     if let Ok(ver) = Version::parse(version) {
+//         if VersionReq::parse(">=1.21.0").unwrap().matches(&ver) {
+//             return version.to_owned();
+//         }
+//     }
+
+//     let mut next = version;
+
+//     // Remove all trailing ".0"
+//     while let Some(prefix) = next.strip_suffix(".0") {
+//         next = prefix;
+//     }
+
+//     // Remove leading ".0" from prereleases
+//     let mut next = next.to_owned();
+
+//     while next.contains(".0-") {
+//         next = next.replace(".0-", "-");
+//     }
+
+//     next.replace('-', "")
+// }
 
 #[cfg(test)]
 mod tests {
@@ -68,17 +96,35 @@ mod tests {
 
     #[test]
     fn formats_to() {
-        assert_eq!(to_go_version("1.0.0"), "1");
-        assert_eq!(to_go_version("1.2.0"), "1.2");
-        assert_eq!(to_go_version("1.2.3"), "1.2.3");
+        assert_eq!(to_go_version(&VersionSpec::parse("1.0.0").unwrap()), "1");
+        assert_eq!(to_go_version(&VersionSpec::parse("1.2.0").unwrap()), "1.2");
+        assert_eq!(
+            to_go_version(&VersionSpec::parse("1.2.3").unwrap()),
+            "1.2.3"
+        );
 
-        assert_eq!(to_go_version("1.0.0-alpha1"), "1alpha1");
-        assert_eq!(to_go_version("1.2.0-beta2"), "1.2beta2");
-        assert_eq!(to_go_version("1.2.3-rc3"), "1.2.3rc3");
+        assert_eq!(
+            to_go_version(&VersionSpec::parse("1.0.0-alpha1").unwrap()),
+            "1alpha1"
+        );
+        assert_eq!(
+            to_go_version(&VersionSpec::parse("1.2.0-beta2").unwrap()),
+            "1.2beta2"
+        );
+        assert_eq!(
+            to_go_version(&VersionSpec::parse("1.2.3-rc3").unwrap()),
+            "1.2.3rc3"
+        );
 
         // New versioning
-        assert_eq!(to_go_version("1.21.0"), "1.21.0");
-        assert_eq!(to_go_version("1.22.1"), "1.22.1");
+        assert_eq!(
+            to_go_version(&VersionSpec::parse("1.21.0").unwrap()),
+            "1.21.0"
+        );
+        assert_eq!(
+            to_go_version(&VersionSpec::parse("1.22.1").unwrap()),
+            "1.22.1"
+        );
         // assert_eq!(to_go_version("1.23.0-beta2"), "1.23.0beta2");
     }
 }
