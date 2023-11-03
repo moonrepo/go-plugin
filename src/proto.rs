@@ -119,6 +119,27 @@ pub fn download_prebuilt(
 }
 
 #[plugin_fn]
+pub fn locate_executables(
+    Json(_): Json<LocateExecutablesInput>,
+) -> FnResult<Json<LocateExecutablesOutput>> {
+    let env = get_proto_environment()?;
+
+    Ok(Json(LocateExecutablesOutput {
+        globals_lookup_dirs: vec![
+            "$GOBIN".into(),
+            "$GOROOT/bin".into(),
+            "$GOPATH/bin".into(),
+            "$HOME/go/bin".into(),
+        ],
+        primary: Some(ExecutableConfig::with_path(format_bin_name(
+            format!("bin/{}", BIN),
+            env.os,
+        ))),
+        ..LocateExecutablesOutput::default()
+    }))
+}
+
+#[plugin_fn]
 pub fn install_global(
     Json(input): Json<InstallGlobalInput>,
 ) -> FnResult<Json<InstallGlobalOutput>> {
