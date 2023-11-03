@@ -23,6 +23,44 @@ pub fn register_tool(Json(_): Json<ToolMetadataInput>) -> FnResult<Json<ToolMeta
 }
 
 #[plugin_fn]
+pub fn detect_version_files(_: ()) -> FnResult<Json<DetectVersionOutput>> {
+    Ok(Json(DetectVersionOutput {
+        files: vec!["go.mod".into(), "go.work".into()],
+    }))
+}
+
+#[plugin_fn]
+pub fn load_versions(Json(_): Json<LoadVersionsInput>) -> FnResult<Json<LoadVersionsOutput>> {
+    let tags = load_git_tags("https://github.com/golang/go")?;
+
+    let tags = tags
+        .iter()
+        .filter_map(|t| t.strip_prefix("go"))
+        .map(from_go_version)
+        .collect::<Vec<_>>();
+
+    Ok(Json(LoadVersionsOutput::from(tags)?))
+}
+
+#[plugin_fn]
+pub fn parse_version_file(
+    Json(input): Json<ParseVersionFileInput>,
+) -> FnResult<Json<ParseVersionFileOutput>> {
+    let mut version = None;
+
+    if input.file == "go.mod" || input.file == "go.work" {
+        for line in input.content.split('\n') {
+            if let Some(v) = line.strip_prefix("go ") {
+                version = Some(UnresolvedVersionSpec::parse(v)?);
+                break;
+            }
+        }
+    }
+
+    Ok(Json(ParseVersionFileOutput { version }))
+}
+
+#[plugin_fn]
 pub fn download_prebuilt(
     Json(input): Json<DownloadPrebuiltInput>,
 ) -> FnResult<Json<DownloadPrebuiltOutput>> {
@@ -81,61 +119,6 @@ pub fn download_prebuilt(
 }
 
 #[plugin_fn]
-pub fn locate_bins(Json(_): Json<LocateBinsInput>) -> FnResult<Json<LocateBinsOutput>> {
-    let env = get_proto_environment()?;
-
-    Ok(Json(LocateBinsOutput {
-        bin_path: Some(format_bin_name(format!("bin/{}", BIN), env.os).into()),
-        fallback_last_globals_dir: true,
-        globals_lookup_dirs: vec![
-            "$GOBIN".into(),
-            "$GOROOT/bin".into(),
-            "$GOPATH/bin".into(),
-            "$HOME/go/bin".into(),
-        ],
-        ..LocateBinsOutput::default()
-    }))
-}
-
-#[plugin_fn]
-pub fn load_versions(Json(_): Json<LoadVersionsInput>) -> FnResult<Json<LoadVersionsOutput>> {
-    let tags = load_git_tags("https://github.com/golang/go")?;
-
-    let tags = tags
-        .iter()
-        .filter_map(|t| t.strip_prefix("go"))
-        .map(from_go_version)
-        .collect::<Vec<_>>();
-
-    Ok(Json(LoadVersionsOutput::from(tags)?))
-}
-
-#[plugin_fn]
-pub fn detect_version_files(_: ()) -> FnResult<Json<DetectVersionOutput>> {
-    Ok(Json(DetectVersionOutput {
-        files: vec!["go.mod".into(), "go.work".into()],
-    }))
-}
-
-#[plugin_fn]
-pub fn parse_version_file(
-    Json(input): Json<ParseVersionFileInput>,
-) -> FnResult<Json<ParseVersionFileOutput>> {
-    let mut version = None;
-
-    if input.file == "go.mod" || input.file == "go.work" {
-        for line in input.content.split('\n') {
-            if let Some(v) = line.strip_prefix("go ") {
-                version = Some(UnresolvedVersionSpec::parse(v)?);
-                break;
-            }
-        }
-    }
-
-    Ok(Json(ParseVersionFileOutput { version }))
-}
-
-#[plugin_fn]
 pub fn install_global(
     Json(input): Json<InstallGlobalInput>,
 ) -> FnResult<Json<InstallGlobalOutput>> {
@@ -176,5 +159,25 @@ pub fn sync_shell_profile(
         )])),
         extend_path: Some(vec!["$GOBIN".into()]),
         skip_sync: input.passthrough_args.contains(&"--no-gobin".to_string()),
+    }))
+}
+
+// DEPRECATED
+// Removed in v0.23!
+
+#[plugin_fn]
+pub fn locate_bins(Json(_): Json<LocateBinsInput>) -> FnResult<Json<LocateBinsOutput>> {
+    let env = get_proto_environment()?;
+
+    Ok(Json(LocateBinsOutput {
+        bin_path: Some(format_bin_name(format!("bin/{}", BIN), env.os).into()),
+        fallback_last_globals_dir: true,
+        globals_lookup_dirs: vec![
+            "$GOBIN".into(),
+            "$GOROOT/bin".into(),
+            "$GOPATH/bin".into(),
+            "$HOME/go/bin".into(),
+        ],
+        ..LocateBinsOutput::default()
     }))
 }
