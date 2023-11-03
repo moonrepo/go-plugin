@@ -131,7 +131,7 @@ pub fn locate_executables(
             "$GOPATH/bin".into(),
             "$HOME/go/bin".into(),
         ],
-        primary: Some(ExecutableConfig::with_path(format_bin_name(
+        primary: Some(ExecutableConfig::new(format_bin_name(
             format!("bin/{}", BIN),
             env.os,
         ))),
