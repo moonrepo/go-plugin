@@ -131,10 +131,9 @@ pub fn locate_executables(
             "$GOPATH/bin".into(),
             "$HOME/go/bin".into(),
         ],
-        primary: Some(ExecutableConfig::new(format_bin_name(
-            format!("bin/{}", BIN),
-            env.os,
-        ))),
+        primary: Some(ExecutableConfig::new(
+            env.os.get_exe_name(format!("bin/{}", BIN)),
+        )),
         ..LocateExecutablesOutput::default()
     }))
 }
@@ -191,7 +190,7 @@ pub fn locate_bins(Json(_): Json<LocateBinsInput>) -> FnResult<Json<LocateBinsOu
     let env = get_proto_environment()?;
 
     Ok(Json(LocateBinsOutput {
-        bin_path: Some(format_bin_name(format!("bin/{}", BIN), env.os).into()),
+        bin_path: Some(env.os.get_exe_name(format!("bin/{}", BIN)).into()),
         fallback_last_globals_dir: true,
         globals_lookup_dirs: vec![
             "$GOBIN".into(),
