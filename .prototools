@@ -1,2 +1,2 @@
 [plugins]
-go-test = "source:/Users/miles/.cargo/shared-target/wasm32-wasi/debug/go_plugin.wasm"
+go-test = "source:target/wasm32-wasi/debug/go_plugin.wasm"
