@@ -1,6 +1,7 @@
 use crate::version::{from_go_version, to_go_version};
 use extism_pdk::*;
 use proto_pdk::*;
+use serde::Deserialize;
 use std::collections::HashMap;
 use std::fs;
 
@@ -11,6 +12,17 @@ extern "ExtismHost" {
 
 static NAME: &str = "Go";
 static BIN: &str = "go";
+
+#[derive(Deserialize)]
+struct GoConfig {
+    gobin: bool,
+}
+
+impl Default for GoConfig {
+    fn default() -> Self {
+        Self { gobin: true }
+    }
+}
 
 #[plugin_fn]
 pub fn register_tool(Json(_): Json<ToolMetadataInput>) -> FnResult<Json<ToolMetadataOutput>> {
@@ -172,6 +184,8 @@ pub fn uninstall_global(
 pub fn sync_shell_profile(
     Json(input): Json<SyncShellProfileInput>,
 ) -> FnResult<Json<SyncShellProfileOutput>> {
+    let config = get_tool_config::<GoConfig>()?;
+
     Ok(Json(SyncShellProfileOutput {
         check_var: "GOBIN".into(),
         export_vars: Some(HashMap::from_iter([(
@@ -179,7 +193,11 @@ pub fn sync_shell_profile(
             "$HOME/go/bin".into(),
         )])),
         extend_path: Some(vec!["$GOBIN".into()]),
-        skip_sync: input.passthrough_args.contains(&"--no-gobin".to_string()),
+        skip_sync: !config.gobin
+            || input
+                .passthrough_args
+                .iter()
+                .any(|arg| arg.as_str() == "--no-gobin"),
     }))
 }
 
