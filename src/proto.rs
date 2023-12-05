@@ -14,6 +14,7 @@ static NAME: &str = "Go";
 static BIN: &str = "go";
 
 #[derive(Deserialize)]
+#[serde(default, rename_all = "kebab-case")]
 struct GoConfig {
     gobin: bool,
 }
