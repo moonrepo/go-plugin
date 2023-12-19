@@ -49,4 +49,4 @@ jobs:
         with:
           proto-version: 0.26.0-rc.1
       - run: cargo wasi build
-      - run: cargo nextest run
+      - run: cargo nextest run --no-default-features
