@@ -45,5 +45,8 @@ jobs:
       - uses: moonrepo/setup-rust@v1
         with:
           bins: cargo-wasi, cargo-nextest
+      - uses: moonrepo/setup-toolchain
+        with:
+          proto-version: 0.26.0-rc.1
       - run: cargo wasi build
       - run: cargo nextest run
