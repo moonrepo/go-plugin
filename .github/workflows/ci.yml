@@ -48,5 +48,7 @@ jobs:
       - uses: moonrepo/setup-toolchain@v0
         with:
           proto-version: 0.26.0-rc.1
+        env:
+          PROTO_DEBUG: true
       - run: cargo wasi build
       - run: cargo nextest run --no-default-features
