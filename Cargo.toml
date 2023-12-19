@@ -14,7 +14,7 @@ proto_pdk = { version = "0.12.1" } # , path = "../../proto/crates/pdk" }
 serde = "1.0.193"
 
 [dev-dependencies]
-proto_pdk_test_utils = { version = "0.14.1" }       # , path = "../../proto/crates/pdk-test-utils" }
+proto_pdk_test_utils = { version = "0.14.2" }       # , path = "../../proto/crates/pdk-test-utils" }
 starbase_sandbox = "0.1.12"
 tokio = { version = "1.35.0", features = ["full"] }
 

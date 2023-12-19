@@ -2090,9 +2090,9 @@ dependencies = [
 
 [[package]]
 name = "proto_core"
-version = "0.26.1"
+version = "0.26.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "81d09b866e9aab85c9977081f6bdbf53eca9870cf3b6b7bf9a5729e255ef29d9"
+checksum = "2c0635180592a026a18ae3ce4243dd01e8dbd81f75682790231631515c3335ea"
 dependencies = [
  "cached",
  "extism",
@@ -2151,9 +2151,9 @@ dependencies = [
 
 [[package]]
 name = "proto_pdk_test_utils"
-version = "0.14.1"
+version = "0.14.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7bb7312a69dead487701b8530598150e512e17692d8c2e838adb54b97f98a4b5"
+checksum = "18f3ef48bf694557aeb7fdc2ebfa83e007e59092a32fa76a5657ceedd15c5205"
 dependencies = [
  "extism",
  "proto_core",
