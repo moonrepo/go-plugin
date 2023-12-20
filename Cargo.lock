@@ -430,6 +430,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "aaa6b4b263a5d737e9bf6b7c09b72c41a5480aec4d7219af827f6564e950b6a5"
 
 [[package]]
+name = "command-group"
+version = "5.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a68fa787550392a9d58f44c21a3022cfb3ea3e2458b7f85d3b399d0ceeccf409"
+dependencies = [
+ "nix",
+ "winapi",
+]
+
+[[package]]
 name = "compact_str"
 version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1864,6 +1874,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "nix"
+version = "0.27.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2eb04e9c688eff1c89d72b407f168cf79bb9e867a9d3323ed6c01519eb9cc053"
+dependencies = [
+ "bitflags 2.3.3",
+ "cfg-if",
+ "libc",
+]
+
+[[package]]
 name = "nom"
 version = "7.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2090,9 +2111,9 @@ dependencies = [
 
 [[package]]
 name = "proto_core"
-version = "0.26.2"
+version = "0.26.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2c0635180592a026a18ae3ce4243dd01e8dbd81f75682790231631515c3335ea"
+checksum = "e5011f4e9b6f476f02adeb384619092cc60f0dc6e06288232d38d5bf3f3b78b8"
 dependencies = [
  "cached",
  "extism",
@@ -2101,6 +2122,7 @@ dependencies = [
  "minisign-verify",
  "once_cell",
  "proto_pdk_api",
+ "proto_shim",
  "regex",
  "reqwest",
  "schematic",
@@ -2123,9 +2145,9 @@ dependencies = [
 
 [[package]]
 name = "proto_pdk"
-version = "0.12.1"
+version = "0.12.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "535f9dc04d0f5498fdb0be5ad03e679cc9b333ee9de517f495b575c405ee53fc"
+checksum = "f48c79d2b872cb8c7a7cdb609e3e7f214d9ee1bcf178f6a30246e9342863dd40"
 dependencies = [
  "anyhow",
  "extism-pdk",
@@ -2135,9 +2157,9 @@ dependencies = [
 
 [[package]]
 name = "proto_pdk_api"
-version = "0.12.1"
+version = "0.12.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "de1c915c2e7d4a8c8ffd104e6c4df27f47ef5553e6342983bbbf7a732f17fd9e"
+checksum = "cdb30a90de48c242c147a65dff61438d55761f5e587bd611ab6e12812b19a573"
 dependencies = [
  "anyhow",
  "semver",
@@ -2151,14 +2173,24 @@ dependencies = [
 
 [[package]]
 name = "proto_pdk_test_utils"
-version = "0.14.2"
+version = "0.14.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "18f3ef48bf694557aeb7fdc2ebfa83e007e59092a32fa76a5657ceedd15c5205"
+checksum = "c262abdb72f9ebeade1a49ca0e1b021b22b3c4a053b1e56e96f0d5b28efbb236"
 dependencies = [
  "extism",
  "proto_core",
  "proto_pdk_api",
  "serde_json",
+]
+
+[[package]]
+name = "proto_shim"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7b50b58a1414a2ed67627ec6f2c695e8a47be3fa0ab70b49e43b6dec8523aee2"
+dependencies = [
+ "command-group",
+ "dirs 5.0.1",
 ]
 
 [[package]]
@@ -2327,9 +2359,9 @@ checksum = "c707298afce11da2efef2f600116fa93ffa7a032b5d7b628aa17711ec81383ca"
 
 [[package]]
 name = "reqwest"
-version = "0.11.22"
+version = "0.11.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "046cd98826c46c2ac8ddecae268eb5c2e58628688a5fc7a2643704a73faba95b"
+checksum = "37b1ae8d9ac08420c66222fb9096fc5de435c3c48542bc5336c51892cffafb41"
 dependencies = [
  "base64",
  "bytes",
@@ -3051,18 +3083,18 @@ checksum = "222a222a5bfe1bba4a77b45ec488a741b3cb8872e5e499451fd7d0129c9c7c3d"
 
 [[package]]
 name = "thiserror"
-version = "1.0.50"
+version = "1.0.51"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f9a7210f5c9a7156bb50aa36aed4c95afb51df0df00713949448cf9e97d382d2"
+checksum = "f11c217e1416d6f036b870f14e0413d480dbf28edbee1f877abaf0206af43bb7"
 dependencies = [
  "thiserror-impl",
 ]
 
 [[package]]
 name = "thiserror-impl"
-version = "1.0.50"
+version = "1.0.51"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "266b2e40bc00e5a6c09c3584011e08b06f123c00362c92b975ba9843aaaa14b8"
+checksum = "01742297787513b79cf8e29d1056ede1313e2420b7b3b15d0a768b4921f549df"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -3118,9 +3150,9 @@ checksum = "1f3ccbac311fea05f86f61904b462b55fb3df8837a366dfc601a0161d0532f20"
 
 [[package]]
 name = "tokio"
-version = "1.35.0"
+version = "1.35.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "841d45b238a16291a4e1584e61820b8ae57d696cc5015c459c229ccc6990cc1c"
+checksum = "c89b4efa943be685f629b149f53829423f8f5531ea21249408e8e2f8671ec104"
 dependencies = [
  "backtrace",
  "bytes",
