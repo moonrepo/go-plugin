@@ -1,9 +1,7 @@
+#[cfg(feature = "wasm")]
+mod proto;
+#[cfg(feature = "wasm")]
 mod version;
 
-// WASM cannot be executed through the test runner and we need to avoid building
-// WASM code for non-WASM targets. We can solve both of these with a cfg flag.
-#[cfg(not(test))]
-mod proto;
-
-#[cfg(not(test))]
+#[cfg(feature = "wasm")]
 pub use proto::*;
