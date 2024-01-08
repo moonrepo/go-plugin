@@ -49,7 +49,7 @@ pub fn load_versions(Json(_): Json<LoadVersionsInput>) -> FnResult<Json<LoadVers
 
     let tags = tags
         .iter()
-        .filter_map(|t| t.strip_prefix("go"))
+        .filter_map(|tag| tag.strip_prefix("go"))
         .map(from_go_version)
         .collect::<Vec<_>>();
 
@@ -199,25 +199,5 @@ pub fn sync_shell_profile(
                 .passthrough_args
                 .iter()
                 .any(|arg| arg.as_str() == "--no-gobin"),
-    }))
-}
-
-// DEPRECATED
-// Removed in v0.23!
-
-#[plugin_fn]
-pub fn locate_bins(Json(_): Json<LocateBinsInput>) -> FnResult<Json<LocateBinsOutput>> {
-    let env = get_proto_environment()?;
-
-    Ok(Json(LocateBinsOutput {
-        bin_path: Some(env.os.get_exe_name(format!("bin/{}", BIN)).into()),
-        fallback_last_globals_dir: true,
-        globals_lookup_dirs: vec![
-            "$GOBIN".into(),
-            "$GOROOT/bin".into(),
-            "$GOPATH/bin".into(),
-            "$HOME/go/bin".into(),
-        ],
-        ..LocateBinsOutput::default()
     }))
 }
