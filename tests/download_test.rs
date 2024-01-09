@@ -1,18 +1,17 @@
 use proto_pdk_test_utils::*;
 use starbase_sandbox::create_empty_sandbox;
+use std::collections::HashMap;
 
 generate_download_install_tests!("go-test", "1.21.0");
 
 #[test]
 fn supports_linux_arm64() {
     let sandbox = create_empty_sandbox();
-    let mut plugin = create_plugin("go-test", sandbox.path());
-
-    plugin.set_environment(HostEnvironment {
-        arch: HostArch::Arm64,
-        os: HostOS::Linux,
-        ..Default::default()
-    });
+    let plugin = create_plugin_with_config(
+        "go-test",
+        sandbox.path(),
+        HashMap::from_iter([map_config_environment(HostOS::Linux, HostArch::Arm64)]),
+    );
 
     assert_eq!(
         plugin.download_prebuilt(DownloadPrebuiltInput {
@@ -35,13 +34,11 @@ fn supports_linux_arm64() {
 #[test]
 fn supports_linux_x64() {
     let sandbox = create_empty_sandbox();
-    let mut plugin = create_plugin("go-test", sandbox.path());
-
-    plugin.set_environment(HostEnvironment {
-        arch: HostArch::X64,
-        os: HostOS::Linux,
-        ..Default::default()
-    });
+    let plugin = create_plugin_with_config(
+        "go-test",
+        sandbox.path(),
+        HashMap::from_iter([map_config_environment(HostOS::Linux, HostArch::X64)]),
+    );
 
     assert_eq!(
         plugin.download_prebuilt(DownloadPrebuiltInput {
@@ -64,13 +61,11 @@ fn supports_linux_x64() {
 #[test]
 fn supports_macos_arm64() {
     let sandbox = create_empty_sandbox();
-    let mut plugin = create_plugin("go-test", sandbox.path());
-
-    plugin.set_environment(HostEnvironment {
-        arch: HostArch::Arm64,
-        os: HostOS::MacOS,
-        ..Default::default()
-    });
+    let plugin = create_plugin_with_config(
+        "go-test",
+        sandbox.path(),
+        HashMap::from_iter([map_config_environment(HostOS::MacOS, HostArch::Arm64)]),
+    );
 
     assert_eq!(
         plugin.download_prebuilt(DownloadPrebuiltInput {
@@ -93,13 +88,11 @@ fn supports_macos_arm64() {
 #[test]
 fn supports_macos_x64() {
     let sandbox = create_empty_sandbox();
-    let mut plugin = create_plugin("go-test", sandbox.path());
-
-    plugin.set_environment(HostEnvironment {
-        arch: HostArch::X64,
-        os: HostOS::MacOS,
-        ..Default::default()
-    });
+    let plugin = create_plugin_with_config(
+        "go-test",
+        sandbox.path(),
+        HashMap::from_iter([map_config_environment(HostOS::MacOS, HostArch::X64)]),
+    );
 
     assert_eq!(
         plugin.download_prebuilt(DownloadPrebuiltInput {
@@ -122,13 +115,11 @@ fn supports_macos_x64() {
 #[test]
 fn supports_windows_x64() {
     let sandbox = create_empty_sandbox();
-    let mut plugin = create_plugin("go-test", sandbox.path());
-
-    plugin.set_environment(HostEnvironment {
-        arch: HostArch::X64,
-        os: HostOS::Windows,
-        ..Default::default()
-    });
+    let plugin = create_plugin_with_config(
+        "go-test",
+        sandbox.path(),
+        HashMap::from_iter([map_config_environment(HostOS::Windows, HostArch::X64)]),
+    );
 
     assert_eq!(
         plugin.download_prebuilt(DownloadPrebuiltInput {
@@ -151,13 +142,11 @@ fn supports_windows_x64() {
 #[test]
 fn supports_freebsd_x64() {
     let sandbox = create_empty_sandbox();
-    let mut plugin = create_plugin("go-test", sandbox.path());
-
-    plugin.set_environment(HostEnvironment {
-        arch: HostArch::X64,
-        os: HostOS::FreeBSD,
-        ..Default::default()
-    });
+    let plugin = create_plugin_with_config(
+        "go-test",
+        sandbox.path(),
+        HashMap::from_iter([map_config_environment(HostOS::FreeBSD, HostArch::X64)]),
+    );
 
     assert_eq!(
         plugin.download_prebuilt(DownloadPrebuiltInput {
@@ -180,13 +169,11 @@ fn supports_freebsd_x64() {
 #[test]
 fn locates_unix_bin() {
     let sandbox = create_empty_sandbox();
-    let mut plugin = create_plugin("go-test", sandbox.path());
-
-    plugin.set_environment(HostEnvironment {
-        arch: HostArch::Arm64,
-        os: HostOS::Linux,
-        ..Default::default()
-    });
+    let plugin = create_plugin_with_config(
+        "go-test",
+        sandbox.path(),
+        HashMap::from_iter([map_config_environment(HostOS::Linux, HostArch::Arm64)]),
+    );
 
     assert_eq!(
         plugin
@@ -206,13 +193,11 @@ fn locates_unix_bin() {
 #[test]
 fn locates_windows_bin() {
     let sandbox = create_empty_sandbox();
-    let mut plugin = create_plugin("go-test", sandbox.path());
-
-    plugin.set_environment(HostEnvironment {
-        arch: HostArch::X64,
-        os: HostOS::Windows,
-        ..Default::default()
-    });
+    let plugin = create_plugin_with_config(
+        "go-test",
+        sandbox.path(),
+        HashMap::from_iter([map_config_environment(HostOS::Windows, HostArch::X64)]),
+    );
 
     assert_eq!(
         plugin
