@@ -78,7 +78,7 @@ pub fn parse_version_file(
 pub fn download_prebuilt(
     Json(input): Json<DownloadPrebuiltInput>,
 ) -> FnResult<Json<DownloadPrebuiltOutput>> {
-    let env = get_proto_environment()?;
+    let env = get_host_environment()?;
 
     check_supported_os_and_arch(
         NAME,
@@ -96,7 +96,10 @@ pub fn download_prebuilt(
     let version = &input.context.version;
 
     if version.is_canary() {
-        return err!(PluginError::UnsupportedCanary { tool: NAME.into() }.into());
+        return Err(plugin_err!(PluginError::UnsupportedCanary {
+            tool: NAME.into()
+        }
+        .to_string()));
     }
 
     let arch = match env.arch {
@@ -136,7 +139,7 @@ pub fn download_prebuilt(
 pub fn locate_executables(
     Json(_): Json<LocateExecutablesInput>,
 ) -> FnResult<Json<LocateExecutablesOutput>> {
-    let env = get_proto_environment()?;
+    let env = get_host_environment()?;
 
     Ok(Json(LocateExecutablesOutput {
         globals_lookup_dirs: vec![
