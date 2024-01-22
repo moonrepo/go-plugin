@@ -98,8 +98,7 @@ pub fn download_prebuilt(
     if version.is_canary() {
         return Err(plugin_err!(PluginError::UnsupportedCanary {
             tool: NAME.into()
-        }
-        .to_string()));
+        }));
     }
 
     let arch = match env.arch {
