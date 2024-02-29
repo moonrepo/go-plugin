@@ -3,7 +3,6 @@ use extism_pdk::*;
 use proto_pdk::*;
 use serde::Deserialize;
 use std::collections::HashMap;
-use std::fs;
 
 #[host_fn]
 extern "ExtismHost" {
@@ -152,35 +151,6 @@ pub fn locate_executables(
         )),
         ..LocateExecutablesOutput::default()
     }))
-}
-
-#[plugin_fn]
-pub fn install_global(
-    Json(input): Json<InstallGlobalInput>,
-) -> FnResult<Json<InstallGlobalOutput>> {
-    let result = exec_command!(inherit, BIN, ["install", &input.dependency]);
-
-    Ok(Json(InstallGlobalOutput::from_exec_command(result)))
-}
-
-#[plugin_fn]
-pub fn uninstall_global(
-    Json(input): Json<UninstallGlobalInput>,
-) -> FnResult<Json<UninstallGlobalOutput>> {
-    let mut output = UninstallGlobalOutput {
-        uninstalled: true,
-        ..UninstallGlobalOutput::default()
-    };
-    let global_path = input.globals_dir.join(input.dependency);
-
-    if global_path.exists() {
-        if let Err(error) = fs::remove_file(global_path) {
-            output.uninstalled = false;
-            output.error = Some(error.to_string());
-        }
-    }
-
-    Ok(Json(output))
 }
 
 #[plugin_fn]
