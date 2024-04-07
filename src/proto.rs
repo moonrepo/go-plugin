@@ -1,7 +1,7 @@
+use crate::config::GoPluginConfig;
 use crate::version::{from_go_version, to_go_version};
 use extism_pdk::*;
 use proto_pdk::*;
-use serde::Deserialize;
 use std::collections::HashMap;
 
 #[host_fn]
@@ -11,18 +11,6 @@ extern "ExtismHost" {
 
 static NAME: &str = "Go";
 static BIN: &str = "go";
-
-#[derive(Deserialize)]
-#[serde(default, rename_all = "kebab-case")]
-struct GoConfig {
-    gobin: bool,
-}
-
-impl Default for GoConfig {
-    fn default() -> Self {
-        Self { gobin: true }
-    }
-}
 
 #[plugin_fn]
 pub fn register_tool(Json(_): Json<ToolMetadataInput>) -> FnResult<Json<ToolMetadataOutput>> {
@@ -124,10 +112,17 @@ pub fn download_prebuilt(
         format!("{prefix}.tar.gz")
     };
 
+    let host = get_tool_config::<GoPluginConfig>()?.dist_url;
+
     Ok(Json(DownloadPrebuiltOutput {
         archive_prefix: Some("go".into()),
-        checksum_url: Some(format!("https://dl.google.com/go/{filename}.sha256")),
-        download_url: format!("https://dl.google.com/go/{filename}"),
+        checksum_url: Some(
+            host.replace("{version}", &version)
+                .replace("{file}", &format!("{filename}.sha256")),
+        ),
+        download_url: host
+            .replace("{version}", &version)
+            .replace("{file}", &filename),
         download_name: Some(filename),
         ..DownloadPrebuiltOutput::default()
     }))
@@ -157,7 +152,7 @@ pub fn locate_executables(
 pub fn sync_shell_profile(
     Json(input): Json<SyncShellProfileInput>,
 ) -> FnResult<Json<SyncShellProfileOutput>> {
-    let config = get_tool_config::<GoConfig>()?;
+    let config = get_tool_config::<GoPluginConfig>()?;
 
     Ok(Json(SyncShellProfileOutput {
         check_var: "GOBIN".into(),
