@@ -8,7 +8,7 @@ pub struct GoPluginConfig {
 impl Default for GoPluginConfig {
     fn default() -> Self {
         Self {
-            dist_url: "https://dl.deno.land/release/v{version}/{file}".into(),
+            dist_url: "https://dl.google.com/go/{file}".into(),
             gobin: true,
         }
     }
