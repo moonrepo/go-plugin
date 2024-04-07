@@ -19,10 +19,12 @@ go = "source:https://github.com/moonrepo/go-plugin/releases/download/vX.Y.Z/go_p
 
 Go plugin can be configured with a `.prototools` file.
 
+- `dist-url` (string) - The distribution URL to download Go archives from. Supports `{version}` and `{file}` tokens.
 - `gobin` (bool) - When enabled, will inject a `GOBIN` environment variable into your shell. Defaults to `true`.
 
 ```toml
 [tools.go]
+dist-url = "https://..."
 gobin = false
 ```
 
