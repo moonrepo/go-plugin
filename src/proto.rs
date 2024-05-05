@@ -61,6 +61,54 @@ pub fn parse_version_file(
     Ok(Json(ParseVersionFileOutput { version }))
 }
 
+// https://go.dev/doc/install/source
+#[plugin_fn]
+pub fn build_instructions(
+    Json(input): Json<BuildInstructionsInput>,
+) -> FnResult<Json<BuildInstructionsOutput>> {
+    let env = get_host_environment()?;
+
+    let mut output = BuildInstructionsOutput {
+        source: SourceLocation::Git(GitSource {
+            url: "https://go.googlesource.com/go".into(),
+            reference: "main".into(), // TODO
+            submodules: false,
+        }),
+        help_url: Some("https://go.dev/doc/install/source".into()),
+        requirements: vec![
+            BuildRequirement::CommandExistsOnPath("git".into()),
+            BuildRequirement::CommandExistsOnPath("go".into()),
+        ],
+        ..Default::default()
+    };
+
+    let build_command = CommandInstruction {
+        bin: "make.bash".into(),
+        args: vec![],
+        env: HashMap::from_iter([("CGO_ENABLED".into(), "0".into())]),
+        cwd: input
+            .context
+            .tool_dir
+            .real_path()
+            .map(|dir| dir.join("src")),
+    };
+
+    if env.os.is_windows() {
+        output
+            .instructions
+            .push(BuildInstruction::RunCommand(CommandInstruction {
+                bin: "make.bat".into(),
+                ..build_command
+            }));
+    } else {
+        output
+            .instructions
+            .push(BuildInstruction::RunCommand(build_command));
+    }
+
+    Ok(Json(output))
+}
+
 #[plugin_fn]
 pub fn download_prebuilt(
     Json(input): Json<DownloadPrebuiltInput>,
