@@ -52,7 +52,9 @@ pub fn parse_version_file(
     if input.file == "go.mod" || input.file == "go.work" {
         for line in input.content.split('\n') {
             if let Some(v) = line.strip_prefix("go ") {
-                version = Some(UnresolvedVersionSpec::parse(v)?);
+                let range = format!("^{}", from_go_version(v));
+
+                version = Some(UnresolvedVersionSpec::parse(range)?);
                 break;
             }
         }

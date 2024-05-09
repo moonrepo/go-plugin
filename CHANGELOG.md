@@ -5,6 +5,7 @@
 #### 🚀 Updates
 
 - Added `gofmt` as a secondary export.
+- Updated `go.mod` version parsing to use better ranges.
 
 ## 0.11.0
 
