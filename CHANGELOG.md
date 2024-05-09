@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.1
+
+#### 🚀 Updates
+
+- Added `gofmt` as a secondary export.
+
 ## 0.11.0
 
 #### 🚀 Updates

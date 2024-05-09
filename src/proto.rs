@@ -144,6 +144,10 @@ pub fn locate_executables(
         primary: Some(ExecutableConfig::new(
             env.os.get_exe_name(format!("bin/{}", BIN)),
         )),
+        secondary: HashMap::from_iter([(
+            "gofmt".into(),
+            ExecutableConfig::new(env.os.get_exe_name("bin/gofmt")),
+        )]),
         ..LocateExecutablesOutput::default()
     }))
 }
