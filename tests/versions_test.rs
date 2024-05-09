@@ -5,7 +5,7 @@ generate_resolve_versions_tests!("go-test", {
     "1.11" => "1.11.13",
     "1.9.0-rc2" => "1.9.0-rc2",
     "1.21.0" => "1.21.0",
-    "1.21" => "1.21.9",
+    "1.21" => "1.21.10",
 });
 
 #[test]
@@ -50,7 +50,7 @@ require (
 
     assert_eq!(
         output.version.unwrap(),
-        UnresolvedVersionSpec::parse("1.20").unwrap()
+        UnresolvedVersionSpec::parse("^1.20.0").unwrap()
     );
 }
 
@@ -92,7 +92,7 @@ use (
 
     assert_eq!(
         output.version.unwrap(),
-        UnresolvedVersionSpec::parse("1.18").unwrap()
+        UnresolvedVersionSpec::parse("^1.18.0").unwrap()
     );
 }
 

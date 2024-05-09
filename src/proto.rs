@@ -52,7 +52,9 @@ pub fn parse_version_file(
     if input.file == "go.mod" || input.file == "go.work" {
         for line in input.content.split('\n') {
             if let Some(v) = line.strip_prefix("go ") {
-                version = Some(UnresolvedVersionSpec::parse(v)?);
+                let range = format!("^{}", from_go_version(v));
+
+                version = Some(UnresolvedVersionSpec::parse(range)?);
                 break;
             }
         }
@@ -144,6 +146,10 @@ pub fn locate_executables(
         primary: Some(ExecutableConfig::new(
             env.os.get_exe_name(format!("bin/{}", BIN)),
         )),
+        secondary: HashMap::from_iter([(
+            "gofmt".into(),
+            ExecutableConfig::new(env.os.get_exe_name("bin/gofmt")),
+        )]),
         ..LocateExecutablesOutput::default()
     }))
 }

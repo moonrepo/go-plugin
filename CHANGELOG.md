@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.11.1
+
+#### 🚀 Updates
+
+- Added `gofmt` as a secondary shim/binary.
+- Updated `go.mod` version parsing to use better ranges.
+
 ## 0.11.0
 
 #### 🚀 Updates
