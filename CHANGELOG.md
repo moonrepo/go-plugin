@@ -4,7 +4,7 @@
 
 #### 🚀 Updates
 
-- Added `gofmt` as a secondary export.
+- Added `gofmt` as a secondary shim/binary.
 - Updated `go.mod` version parsing to use better ranges.
 
 ## 0.11.0
