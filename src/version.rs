@@ -25,7 +25,9 @@ pub fn to_go_version(spec: &VersionSpec) -> String {
     match spec {
         VersionSpec::Canary => "canary".into(),
         VersionSpec::Alias(alias) => alias.into(),
-        VersionSpec::Version(version) => {
+        _ => {
+            let version = spec.as_version().unwrap();
+
             // Versioning changed in >= 1.21.0
             // https://go.dev/doc/go1.21#introduction
             if version.major >= 1 && version.minor >= 21 {
