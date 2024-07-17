@@ -1,3 +1,5 @@
+> # Migrated to a new repository: https://github.com/moonrepo/tools
+
 # Go plugin
 
 [Go](https://go.dev/) WASM plugin for [proto](https://github.com/moonrepo/proto).
